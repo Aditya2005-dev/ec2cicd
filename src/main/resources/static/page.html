@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk AI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:Arial,sans-serif;
+background:linear-gradient(-45deg,#050816,#0f172a,#111827,#3b0764);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+overflow-x:hidden;color:#fff;
+}
+@keyframes bg{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+canvas{position:fixed;inset:0;z-index:-1}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
+h1{
+font-size:clamp(2.5rem,8vw,5rem);
+background:linear-gradient(90deg,#00e5ff,#7c3aed,#00ffb7);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+text-shadow:0 0 25px #00e5ff;
+}
+p{max-width:700px;margin:20px auto;font-size:1.1rem;color:#cbd5e1}
+button{
+padding:15px 35px;border:none;border-radius:50px;
+background:linear-gradient(90deg,#00e5ff,#7c3aed);
+color:white;font-size:18px;cursor:pointer;
+transition:.35s;box-shadow:0 0 25px #00e5ff;
+}
+button:hover{transform:translateY(-5px) scale(1.05);box-shadow:0 0 50px #7c3aed}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:25px;padding:40px;max-width:1200px;margin:auto}
+.card{
+backdrop-filter:blur(14px);
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.18);
+border-radius:20px;padding:25px;
+transition:.4s;
+}
+.card:hover{transform:translateY(-10px) rotateX(8deg);box-shadow:0 0 35px cyan}
+.num{font-size:2.2rem;font-weight:bold;color:#00f7ff}
+.terminal{
+margin:40px auto;max-width:900px;
+background:#0a0a0a;border-radius:15px;padding:20px;
+box-shadow:0 0 30px rgba(0,255,255,.4);
+font-family:monospace;
+}
+.cursor{display:inline-block;width:10px;background:#00ffb7;animation:blink .7s infinite}
+@keyframes blink{50%{opacity:0}}
+footer{text-align:center;padding:30px;color:#94a3b8}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<section class="hero">
+<h1>CYBERPUNK AI</h1>
+<p id="typing"></p>
+<button onclick="deploy()">Launch AI</button>
+</section>
+
+<div class="cards">
+<div class="card"><h2>⚡ Performance</h2><div class="num" data-target="99">0</div>%</div>
+<div class="card"><h2>🚀 Deployments</h2><div class="num" data-target="1256">0</div></div>
+<div class="card"><h2>☁ Cloud Nodes</h2><div class="num" data-target="48">0</div></div>
+<div class="card"><h2>🤖 AI Models</h2><div class="num" data-target="512">0</div></div>
+</div>
+
+<div class="terminal">
+<div id="term"></div><span class="cursor"></span>
+</div>
+
+<footer>Built with Pure HTML + CSS + JavaScript</footer>
+
+<script>
+const text="Welcome to the Cyberpunk AI Experience. Glassmorphism • Neon • Particles • Interactive UI";
+let i=0;
+function type(){
+ if(i<text.length){
+  typing.textContent+=text[i++];
+  setTimeout(type,35);
+ }
+}
+type();
+
+function deploy(){
+ const lines=[
+ "$ git push origin main",
+ "✔ Building project...",
+ "✔ Creating Docker image...",
+ "✔ Pushing image...",
+ "✔ Connecting to cloud...",
+ "✔ Deployment Successful 🚀"
+ ];
+ let j=0;
+ term.innerHTML="";
+ function next(){
+   if(j<lines.length){
+      term.innerHTML+=lines[j++]+"<br>";
+      setTimeout(next,500);
+   }
+ }
+ next();
+}
+
+document.querySelectorAll(".num").forEach(el=>{
+ let t=+el.dataset.target,c=0;
+ let step=Math.max(1,Math.ceil(t/120));
+ let it=setInterval(()=>{
+   c+=step;
+   if(c>=t){c=t;clearInterval(it);}
+   el.textContent=c;
+ },18);
+});
+
+const cv=document.getElementById("c"),ctx=cv.getContext("2d");
+function resize(){cv.width=innerWidth;cv.height=innerHeight}
+resize();addEventListener("resize",resize);
+const pts=Array.from({length:120},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+1,v:Math.random()*0.7+0.2}));
+function draw(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ pts.forEach(p=>{
+   p.y-=p.v;
+   if(p.y<0)p.y=cv.height;
+   ctx.beginPath();
+   ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+   ctx.fillStyle="rgba(0,255,255,.8)";
+   ctx.fill();
+ });
+ requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
