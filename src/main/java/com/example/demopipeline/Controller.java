@@ -11,7 +11,7 @@ public class Controller {
     
     @GetMapping("/")
     String print(){
-        return "My First Ec2 server and running cicd pipeline for the fisrt time";
+        return "My First Ec2 server and running cicd pipeline for the fisrt time....";
 
     }
     
